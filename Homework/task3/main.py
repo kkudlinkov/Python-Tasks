@@ -1,12 +1,11 @@
 import math
 
 
-def main(n):
-    if n == 0:
-        return 0.16
-    elif n == 1:
-        return 0.96
-    elif n >= 2:
-        return 1 - math.pow(main(n - 1), 4) - main(n - 2)
-    else:
-        return 0
+def main(b, a, n, x):
+    f = 0
+    for c in range(1, n + 1):
+        for j in range(1, a + 1):
+            for k in range(1, b + 1):
+                f += 9 * math.exp(c ** 2 + x ** 3 / 66) ** 6\
+                     + 87 * k ** 3 + math.sin(j) ** 5
+    return f
