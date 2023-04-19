@@ -10,3 +10,7 @@ def main(n):
         return 1 - math.pow(main(n - 1), 4) - main(n - 2)
     else:
         return 0
+
+print(main(2))
+print(main(4))
+print(main(8))
