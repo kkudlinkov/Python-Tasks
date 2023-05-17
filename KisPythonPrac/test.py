@@ -1,11 +1,6 @@
 def Value(x):
     return x
 
-
-def Field(x):
-    return lambda row: row[x]
-
-
 def Project(new_schema, parent_schema, parent):
     # Создается список индексов столбцов в parent, которые соответствуют именам столбцов в new_schema
     indices = [parent_schema.index(col) for col in new_schema]
@@ -32,16 +27,17 @@ def Ne(x, y):
     return lambda row: row[x] != y
 
 
-def Filter(pred, filename):
-    source = Scan(filename)
-    for row in source:
+def Filter(pred, parent):
+    for row in parent:
         if pred(row):
             yield row
 
 
 if __name__ == '__main__':
     # select room, title from talks.csv where time='09:00 AM'
-    result = Project(['room', 'title'], ['time', 'room', 'speaker', 'title'],
-                     Filter(Eq(0, Value('09:00 AM')), Scan('talks.csv')))
+    filename = 'talks.csv'
+    pred = Eq(1, '09:00 AM')
+    filtered = Filter(pred, filename)
+    result = Project(['room', 'title'], ['time', 'room', 'speaker', 'title'], Filter(Eq(1, '09:00 AM'), Scan('talks.csv')))
     Print(result)
 

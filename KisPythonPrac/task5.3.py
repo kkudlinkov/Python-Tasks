@@ -24,11 +24,9 @@ def Project(new_schema, parent_schema, parent):
     for row in parent:
         yield [row[i] for i in indices]
 
-
-Filter(Eq(Field('time'), Value('09:00 AM')), Scan('talks.csv'))
 def Print(parent):
     for row in parent:
         print(row)
 
 
-Print(Filter(Eq(Field('time'), Value('09:00 AM')), Scan('talks.csv')))
+Print(Filter(Eq(1, Value('09:00 AM')), Scan('talks.csv')))
