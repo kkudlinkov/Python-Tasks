@@ -1,17 +1,12 @@
 def main(table):
-    # Удалить пустые столбцы.
-    non_empty_columns = [list(filter(lambda x: x is not None, row)) for row in table]
-
-    # Удалить дубли среди столбцов, оставив только первое вхождение повторяющегося столбца в таблицу.
+    non_empty_columns = [list(filter(lambda x: x is not None, row)
+                              ) for row in table]
     unique_rows = []
     for row in non_empty_columns:
         if row not in unique_rows:
             unique_rows.append(row)
-
-    # Разбить один из столбцов по разделителю “;”.
     for row in unique_rows:
         row[0] = row[0].split(';')
-
     for row in unique_rows:
         row[2] = 'Да' if row[1] == 'true' and row[2] == 'true' else 'Нет'
         row[1] = format(float(row[0][0]), '.4f')
