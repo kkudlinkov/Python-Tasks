@@ -33,7 +33,5 @@ def Scan(filename):
             yield line.strip().split(',')
 
 
-left = Project(['tid', 'time', 'title', 'room'], ['tid', 'time', 'title', 'room'], Scan('talks.csv'))
-right = Project(['tid', 'time'], ['tid', 'time', 'title', 'room'], Scan('talks.csv'))
-
-Print(Join(left, right))
+Print(Join(Project(['tid', 'time', 'title', 'room'], ['tid', 'time', 'title', 'room'], Scan('talks.csv')),
+           Project(['tid', 'time'], ['tid', 'time', 'title', 'room'], Scan('talks.csv'))))
