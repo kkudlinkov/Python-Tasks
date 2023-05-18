@@ -3,14 +3,13 @@ def Join(left, right):
     left_header = next(left)
     right_header = next(right)
     # формируем новый заголовок таблицы
-    new_header = left_header + right_header[1:]
+    new_header = left_header + right_header
     yield new_header
     # проходимся по строкам таблицы left и ищем соответствующие строки из таблицы right
     for left_row in left:
         for right_row in right:
             right_key = right_row[0]
             yield left_row + right_row
-            break
 
 
 def Value(x):
@@ -69,7 +68,6 @@ def Scan(filename):
             yield line.strip().split(',')
 
 
-Print(Filter(Ne(Field('title1'), Field('title2')), Join(
-    Project(['time', 'room', 'title1'], [
-        'time', 'room', 'title'], Scan('talks.csv')),
-    Project(['time', 'room', 'title2'], ['time', 'room', 'title'], Scan('talks.csv')))))
+Print(Filter(Ne(Field('title1'), Field('title2')),
+             Join(Project(['time', 'room', 'title1'], ['time', 'room', 'title'], Scan('talks.csv')),
+                  Project(['time', 'room', 'title2'], ['time', 'room', 'title'], Scan('talks.csv')))))
