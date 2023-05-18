@@ -11,7 +11,8 @@ def Join(left, right):
         left_key = left_row[common_col]
         for right_row in right:
             right_key = right_row[0]
-            yield left_row + right_row[1:]
+            if left_key == right_key:
+                yield left_row + right_row[1:]
             break
 
 
