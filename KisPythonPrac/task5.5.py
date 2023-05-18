@@ -9,13 +9,51 @@ def Join(left, right):
     for left_row in left:
         for right_row in right:
             right_key = right_row[0]
-            yield left_row + right_row[1:]
+            yield left_row + right_row
             break
 
 
-def Project(new_schema, parent_schema, parent):
+def Value(x):
+    def execute(fields, row):
+        return x
+
+    return execute
+
+
+def Field(name):
+    def execute(fields, row):
+        return row[fields.index(name)]
+
+    return execute
+
+
+def Eq(x, y):
+    def execute(fields, row):
+        return x(fields, row) == y(fields, row)
+
+    return execute
+
+
+def Ne(x, y):
+    def execute(fields, row):
+        return x(fields, row) != y(fields, row)
+
+    return execute
+
+
+def Filter(pred, parent):
+    fields = next(parent)
+    yield fields
+    for row in parent:
+        if pred(fields, row):
+            yield row
+
+
+def Project(new_schema, old_schema, parent):
     # Создается список индексов столбцов в parent, которые соответствуют именам столбцов в new_schema
-    indices = [parent_schema.index(col) for col in new_schema]
+    fields = next(parent)
+    yield new_schema
+    indices = [fields.index(col) for col in old_schema if col in fields]
     for row in parent:
         yield [row[i] for i in indices]
 
@@ -31,5 +69,7 @@ def Scan(filename):
             yield line.strip().split(',')
 
 
-Print(Join(Project(['tid', 'title'], ['tid', 'time', 'title', 'room'], Scan('talks.csv')),
-           Project(['tid', 'time', 'room'], ['tid', 'time', 'title', 'room'], Scan('talks.csv'))))
+Print(Filter(Ne(Field('title1'), Field('title2')), Join(
+    Project(['time', 'room', 'title1'], [
+        'time', 'room', 'title'], Scan('talks.csv')),
+    Project(['time', 'room', 'title2'], ['time', 'room', 'title'], Scan('talks.csv')))))

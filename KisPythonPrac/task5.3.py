@@ -44,5 +44,5 @@ if __name__ == '__main__':
     pred = Eq(1, '09:00 AM')
     filtered = Filter(pred, filename)
     result = Project(['room', 'title'], ['time', 'room', 'speaker', 'title'],
-                     Filter(Eq(1, Value('09:00 AM')), Scan('talks.csv')))
+                     Filter(Eq(Field('time'), Value('09:00 AM')), Scan('talks.csv')))
     Print(result)
