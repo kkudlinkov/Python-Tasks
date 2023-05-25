@@ -1,17 +1,3 @@
-def Join(left, right):
-    # находим индекс общего столбца
-    left_header = next(left)
-    right_header = next(right)
-    # формируем новый заголовок таблицы
-    new_header = left_header + right_header
-    yield new_header
-    # проходимся по строкам таблицы left и ищем соответствующие строки из таблицы right
-    for left_row in left:
-        for right_row in right:
-            right_key = right_row[0]
-            yield left_row + right_row
-
-
 def Value(x):
     def execute(fields, row):
         return x
@@ -66,6 +52,25 @@ def Scan(filename):
     with open(filename, 'r') as f:
         for line in f:
             yield line.strip().split(',')
+
+
+def Join(left, right):
+    left_fields = next(left)
+    right_fields = next(right)
+    # Объединяем поля из левой и правой таблиц
+    join_fields = left_fields + [field for field in right_fields if field not in left_fields]
+    yield join_fields
+    # Проходимся по строкам из левой таблицы
+    for left_row in left:
+        # Проходимся по строкам из правой таблицы
+        for right_row in right:
+            # Проверяем условие соединения
+            if all(left_row[left_fields.index(field)] == right_row[right_fields.index(field)]
+                   for field in left_fields):
+                # Если условие выполняется, объединяем строки из левой и правой таблиц
+                join_row = left_row + [right_row[right_fields.index(field)] for field in right_fields
+                                       if field not in left_fields]
+                yield join_row
 
 
 Print(Filter(Ne(Field('title1'), Field('title2')),
